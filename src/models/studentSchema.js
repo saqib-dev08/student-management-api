@@ -2,7 +2,10 @@ import mongoose from "mongoose";
 
 const studentSchema = new mongoose.Schema({
 
-    firstName : String,
+    firstName : {
+        type : String,
+        required : true
+    },
     lastName : String,
     email : {
         type : String,
@@ -12,7 +15,8 @@ const studentSchema = new mongoose.Schema({
      password : {
         type : String,
         required : true
-    }
+    },
+    age : Number
 
 });
 
