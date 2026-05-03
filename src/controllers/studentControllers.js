@@ -32,12 +32,32 @@ const updateStudent = async (req, res, next) => {
         const decodedToken = jwt.verify(studentToken, process.env.JWT_SECRET_KEY);
         console.log("decodedToken ==>", decodedToken);
         
-        const updatedUser = await Student.findByIdAndUpdate(decodedToken.id, studentUpdates);
-        console.log("updatedUser ==>", updatedUser);
+        const updatedStudent = await Student.findByIdAndUpdate(decodedToken.id, studentUpdates);
+        console.log("updatedStudent ==>", updatedStudent);
+
+        successResponse(res, 200, true, "Student data updated successfully!", updatedStudent);
         
 } catch (error) {
     next(error);
 }
 };
 
-export { getStudent, updateStudent };
+const deleteStudent = async (req, res, next) => {
+      try {
+        const studentToken = req.headers.authorization.split(" ")[1];
+        console.log("studentToken ==>", studentToken);
+        
+        const decodedToken = jwt.verify(studentToken, process.env.JWT_SECRET_KEY);
+        console.log("decodedToken ==>", decodedToken);
+        
+        const deletedStudent = await Student.findByIdAndDelete(decodedToken.id);
+        console.log("deletedStudent ==>", deletedStudent);
+
+        successResponse(res, 200, true, "Student deleted successfully!", deletedStudent);
+
+} catch (error) {
+    next(error);
+}
+}
+
+export { getStudent, updateStudent, deleteStudent };

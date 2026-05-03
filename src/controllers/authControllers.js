@@ -1,6 +1,6 @@
 import { Student } from "../models/studentSchema.js";
 import { successResponse } from "../responseHandler/successResponse.js";
-import jwt from "jsonwebtoken"
+import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import dotenv from "dotenv";
 
@@ -18,13 +18,7 @@ const register = async (req, res, next) => {
       });
       console.log("signedStudent ==>", signedStudent);
 
-      successResponse(
-        res,
-        200,
-        true,
-        "Student signed up successfully!",
-        signedStudent,
-      );
+      successResponse( res, 200, true, "Student signed up successfully!", signedStudent );
     });
   } catch (error) {
     next(error);
@@ -44,14 +38,16 @@ const login = async (req, res, next) => {
     bcrypt.compare(password, foundStudent.password, function (err, result) {
       try {
         if (result) {
-          const token = jwt.sign({
+          const token = jwt.sign(
+            {
               email: foundStudent.email,
               id: foundStudent._id,
             },
-            process.env.JWT_SECRET_KEY, {expiresIn : 1*60*60});
+            process.env.JWT_SECRET_KEY,
+            { expiresIn: 1 * 60 * 60 },
+          );
 
-          successResponse( res, 200, true, "Student logged in succesfully!", foundStudent, token );
-
+          successResponse(res, 200, true, "Student logged in succesfully!", foundStudent, token );
         } else {
           throw new Error("Invalid Credentials!");
         }
