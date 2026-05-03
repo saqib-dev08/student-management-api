@@ -1,5 +1,9 @@
+import jwt from "jsonwebtoken";
 import { Student } from "../models/studentSchema.js";
 import { successResponse } from "../responseHandler/successResponse.js";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const getStudent = async (req, res, next) => {
   try {
@@ -17,6 +21,23 @@ const getStudent = async (req, res, next) => {
   }
 };
 
-const updateStudent = (req, res, next) => {};
+const updateStudent = async (req, res, next) => {
+    try {
+        const studentUpdates = req.body;
+        console.log("Student updates ==>", studentUpdates);
+        
+        const studentToken = req.headers.authorization.split(" ")[1];
+        console.log("studentToken ==>", studentToken);
+        
+        const decodedToken = jwt.verify(studentToken, process.env.JWT_SECRET_KEY);
+        console.log("decodedToken ==>", decodedToken);
+        
+        const updatedUser = await Student.findByIdAndUpdate(decodedToken.id, studentUpdates);
+        console.log("updatedUser ==>", updatedUser);
+        
+} catch (error) {
+    next(error);
+}
+};
 
 export { getStudent, updateStudent };
