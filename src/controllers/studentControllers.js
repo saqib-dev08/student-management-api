@@ -12,10 +12,10 @@ const getStudent = async (req, res, next) => {
 
     if (!studentId) throw new Error("Id is required!");
 
-    const myStudent = await Student.findById({ _id: studentId });
-    console.log("myStudent ==>", myStudent);
+    const fetchedStudent = await Student.findById({ _id: studentId });
+    console.log("fetchedStudent ==>", fetchedStudent);
 
-    successResponse(res, 200, true, "Student fetched successfully!", myStudent);
+    successResponse(res, 200, true, "Student fetched successfully!", fetchedStudent);
   } catch (error) {
     next(error);
   }

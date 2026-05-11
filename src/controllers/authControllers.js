@@ -30,31 +30,36 @@ const login = async (req, res, next) => {
     const { email, password } = req.body;
     console.log("body ==>", req.body);
 
-    if (!email || !password) throw new Error("Invalid Credentials!");
+    if (!email || !password) throw new Error("All fields are required!");
 
     const foundStudent = await Student.findOne({ email });
     console.log("foundStudent ==>", foundStudent);
 
-    bcrypt.compare(password, foundStudent.password, function (err, result) {
-      try {
-        if (result) {
-          const token = jwt.sign(
-            {
-              email: foundStudent.email,
-              id: foundStudent._id,
-            },
-            process.env.JWT_SECRET_KEY,
-            { expiresIn: 1 * 60 * 60 },
-          );
-
-          successResponse(res, 200, true, "Student logged in succesfully!", foundStudent, token );
-        } else {
-          throw new Error("Invalid Credentials!");
+    if (foundStudent) {
+      bcrypt.compare(password, foundStudent.password, function (err, result) {
+        try {
+          if (result) {
+            const token = jwt.sign(
+              {
+                email: foundStudent.email,
+                id: foundStudent._id,
+              },
+              process.env.JWT_SECRET_KEY,
+              { expiresIn: "1h" },
+            );
+  
+            successResponse(res, 200, true, "Student logged in succesfully!", foundStudent, token );
+          } else {
+            throw new Error("Invalid Credentials!");
+          }
+        } catch (err) {
+          next(err);
         }
-      } catch (err) {
-        next(err);
-      }
-    });
+      });
+      
+    } else {
+            throw new Error("Invalid Credentials!");
+    }
   } catch (error) {
     next(error);
   }
