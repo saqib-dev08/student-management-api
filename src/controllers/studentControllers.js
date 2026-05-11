@@ -21,6 +21,20 @@ const getStudent = async (req, res, next) => {
   }
 };
 
+const getAllStudents = async (req, res, next) => {
+
+  const students = await Student.find();
+  console.log("students ==>", students);
+
+  if (students.length > 0) {
+    successResponse(res, 200, true, "Students fetched successfully!", students )
+
+  } else {
+    throw new Error("No students found!");
+  }
+
+}
+
 const updateStudent = async (req, res, next) => {
     try {
         const studentUpdates = req.body;
@@ -60,4 +74,4 @@ const deleteStudent = async (req, res, next) => {
 }
 }
 
-export { getStudent, updateStudent, deleteStudent };
+export { getStudent, updateStudent, getAllStudents, deleteStudent };
